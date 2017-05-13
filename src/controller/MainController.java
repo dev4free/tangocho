@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.bl.*;
 import model.entities.Cards;
-
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
 /**
  * Servlet implementation class MainController
  */
@@ -40,9 +41,14 @@ public class MainController extends HttpServlet {
 				currentModel.init();
 			}
 			Cards card = currentModel.getCardById(2);
-	
+			ObjectMapper mapper = new ObjectMapper();
+
+			//Object to JSON in String
+			String jsonInString = mapper.writeValueAsString(card);
 			
-			response.getWriter().append("{\"result\":\"counter="+card.getQuestion()+"\"}");
+			response.setContentType("text/html; charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().append(jsonInString);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

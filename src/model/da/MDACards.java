@@ -44,7 +44,7 @@ public class MDACards {
 		// STEP 6: Clean-up environment
 		rs.close();
 		stmt.close();
-		conn.close();
+		//conn.close();
 		return card;
 	}
 }

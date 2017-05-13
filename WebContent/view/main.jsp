@@ -8,24 +8,28 @@
 <title>Insert title here</title>
 </head>
 <body>
-	ciao
+	question:<span id="question"></span><br>
+	answer:<span id="answer"></span><br>
 
 	<script>
 		$(document).ready(function() {
 			console.log("ready!");
 			var formData = {
-				name : "ravi",
+				name : "aname",
 				age : "31"
 			}; //Array 
 
 			$.ajax({
 				url : "/tangocho/maincontroller",
 				type : "post",
+				encoding:"UTF-8",
 				data : formData,
 				dataType: "json",
 				success : function(data, textStatus, jqXHR) {
 					var response = data;
-					console.log("success!"+data.result);
+					$("#question").html(data.question);
+					$("#answer").html(data.answer);
+					console.log("success!"+data.question);
 				},
 				error : function(jqXHR, textStatus, errorThrown) {
 					console.log("error!"+errorThrown);
