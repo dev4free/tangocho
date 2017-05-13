@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Telosys Database Repository --><root>
+<tableList databaseId="0" databaseName="tangocho" databaseProductName="PostgreSQL" generation="2017-04-29 21:42:55">
+<table catalog="" databaseType="TABLE" javaBean="Accounts" name="accounts" schema="tangocho">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="nextval('accounts_id_seq'::regclass)" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="serial" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="user_name" dbNotNull="true" dbPosition="2" dbSize="50" dbTypeName="varchar" inputType="text" javaName="userName" javaType="java.lang.String" jdbcTypeCode="12" label="User name" maxLength="50" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="user_password" dbNotNull="true" dbPosition="3" dbSize="50" dbTypeName="varchar" inputType="text" javaName="userPassword" javaType="java.lang.String" jdbcTypeCode="12" label="User password" maxLength="50" notEmpty="true" notNull="true" selected="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="decks_account_id_fkey" id="LINK_FK_decks_account_id_fkey_I" inverseSideOf="LINK_FK_decks_account_id_fkey_O" javaName="listOfDecks" javaType="java.util.List" joinTableName="" mappedBy="accounts" optional="UNDEFINED" owningSide="false" sourceTableName="accounts" targetEntity="Decks" targetTableName="decks" used="true"/>
+</table>
+<table catalog="" databaseType="TABLE" javaBean="CardTags" name="card_tags" schema="tangocho">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="nextval('card_tags_id_seq'::regclass)" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="serial" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="card_id" dbNotNull="true" dbPosition="2" dbSize="10" dbTypeName="int4" inputType="number" javaName="cardId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Card id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="tag_id" dbNotNull="true" dbPosition="3" dbSize="10" dbTypeName="int4" inputType="number" javaName="tagId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Tag id" notNull="true" selected="true"/>
+<fk name="card_tags_card_id_fkey">
+<fkcol colname="card_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="card_tags" tableref="cards" updaterule="3"/>
+</fk>
+<fk name="card_tags_tag_id_fkey">
+<fkcol colname="tag_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="card_tags" tableref="tags" updaterule="3"/>
+</fk>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="card_tags_card_id_fkey" id="LINK_FK_card_tags_card_id_fkey_O" inverseSideOf="" javaName="cards" javaType="Cards" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="card_tags" targetEntity="Cards" targetTableName="cards" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="card_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="card_tags_tag_id_fkey" id="LINK_FK_card_tags_tag_id_fkey_O" inverseSideOf="" javaName="tags" javaType="Tags" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="card_tags" targetEntity="Tags" targetTableName="tags" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="tag_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+</table>
+<table catalog="" databaseType="TABLE" javaBean="Cards" name="cards" schema="tangocho">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="nextval('cards_id_seq'::regclass)" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="serial" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="deck_id" dbNotNull="true" dbPosition="2" dbSize="10" dbTypeName="int4" inputType="number" javaName="deckId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Deck id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="question" dbNotNull="true" dbPosition="3" dbSize="2000" dbTypeName="varchar" inputType="text" javaName="question" javaType="java.lang.String" jdbcTypeCode="12" label="Question" maxLength="2000" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="answer" dbNotNull="true" dbPosition="4" dbSize="2000" dbTypeName="varchar" inputType="text" javaName="answer" javaType="java.lang.String" jdbcTypeCode="12" label="Answer" maxLength="2000" notEmpty="true" notNull="true" selected="true"/>
+<column dateType="DT" dbComment="" dbDefaultValue="" dbName="last_time" dbNotNull="false" dbPosition="5" dbSize="29" dbTypeName="timestamp" inputType="" javaName="lastTime" javaType="java.util.Date" jdbcTypeCode="93" label="Last time" notNull="false" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="next_time" dbNotNull="false" dbPosition="6" dbSize="10" dbTypeName="int4" inputType="number" javaName="nextTime" javaType="java.lang.Integer" jdbcTypeCode="4" label="Next time" notNull="false" selected="true"/>
+<column dbComment="" dbDefaultValue="false" dbName="reviewed" dbNotNull="false" dbPosition="7" dbSize="1" dbTypeName="bool" inputType="checkbox" javaName="reviewed" javaType="java.lang.Boolean" jdbcTypeCode="-7" label="Reviewed" notNull="false" selected="true"/>
+<fk name="cards_deck_id_fkey">
+<fkcol colname="deck_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="cards" tableref="decks" updaterule="3"/>
+</fk>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="card_tags_card_id_fkey" id="LINK_FK_card_tags_card_id_fkey_I" inverseSideOf="LINK_FK_card_tags_card_id_fkey_O" javaName="listOfCardTags" javaType="java.util.List" joinTableName="" mappedBy="cards" optional="UNDEFINED" owningSide="false" sourceTableName="cards" targetEntity="CardTags" targetTableName="card_tags" used="true"/>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="cards_deck_id_fkey" id="LINK_FK_cards_deck_id_fkey_O" inverseSideOf="" javaName="decks" javaType="Decks" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="cards" targetEntity="Decks" targetTableName="decks" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="deck_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="history_card_id_fkey" id="LINK_FK_history_card_id_fkey_I" inverseSideOf="LINK_FK_history_card_id_fkey_O" javaName="listOfHistory" javaType="java.util.List" joinTableName="" mappedBy="cards" optional="UNDEFINED" owningSide="false" sourceTableName="cards" targetEntity="History" targetTableName="history" used="true"/>
+</table>
+<table catalog="" databaseType="TABLE" javaBean="Decks" name="decks" schema="tangocho">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="nextval('decks_id_seq'::regclass)" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="serial" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="account_id" dbNotNull="true" dbPosition="2" dbSize="10" dbTypeName="int4" inputType="number" javaName="accountId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Account id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="description" dbNotNull="false" dbPosition="3" dbSize="200" dbTypeName="varchar" inputType="text" javaName="description" javaType="java.lang.String" jdbcTypeCode="12" label="Description" maxLength="200" notNull="false" selected="true"/>
+<fk name="decks_account_id_fkey">
+<fkcol colname="account_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="decks" tableref="accounts" updaterule="3"/>
+</fk>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="cards_deck_id_fkey" id="LINK_FK_cards_deck_id_fkey_I" inverseSideOf="LINK_FK_cards_deck_id_fkey_O" javaName="listOfCards" javaType="java.util.List" joinTableName="" mappedBy="decks" optional="UNDEFINED" owningSide="false" sourceTableName="decks" targetEntity="Cards" targetTableName="cards" used="true"/>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="decks_account_id_fkey" id="LINK_FK_decks_account_id_fkey_O" inverseSideOf="" javaName="accounts" javaType="Accounts" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="decks" targetEntity="Accounts" targetTableName="accounts" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="account_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+</table>
+<table catalog="" databaseType="TABLE" javaBean="History" name="history" schema="tangocho">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="nextval('history_id_seq'::regclass)" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="serial" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="card_id" dbNotNull="true" dbPosition="2" dbSize="10" dbTypeName="int4" inputType="number" javaName="cardId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Card id" notNull="true" selected="true"/>
+<column dateType="DT" dbComment="" dbDefaultValue="" dbName="reviewed_time" dbNotNull="true" dbPosition="3" dbSize="29" dbTypeName="timestamp" inputType="" javaName="reviewedTime" javaType="java.util.Date" jdbcTypeCode="93" label="Reviewed time" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="next_time" dbNotNull="true" dbPosition="4" dbSize="10" dbTypeName="int4" inputType="number" javaName="nextTime" javaType="java.lang.Integer" jdbcTypeCode="4" label="Next time" notNull="true" selected="true"/>
+<fk name="history_card_id_fkey">
+<fkcol colname="card_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="history" tableref="cards" updaterule="3"/>
+</fk>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="history_card_id_fkey" id="LINK_FK_history_card_id_fkey_O" inverseSideOf="" javaName="cards" javaType="Cards" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="history" targetEntity="Cards" targetTableName="cards" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="card_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+</table>
+<table catalog="" databaseType="TABLE" javaBean="Tags" name="tags" schema="tangocho">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="nextval('tags_id_seq'::regclass)" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="serial" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="description" dbNotNull="true" dbPosition="2" dbSize="200" dbTypeName="varchar" inputType="text" javaName="description" javaType="java.lang.String" jdbcTypeCode="12" label="Description" maxLength="200" notEmpty="true" notNull="true" selected="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="card_tags_tag_id_fkey" id="LINK_FK_card_tags_tag_id_fkey_I" inverseSideOf="LINK_FK_card_tags_tag_id_fkey_O" javaName="listOfCardTags" javaType="java.util.List" joinTableName="" mappedBy="tags" optional="UNDEFINED" owningSide="false" sourceTableName="tags" targetEntity="CardTags" targetTableName="card_tags" used="true"/>
+</table>
+</tableList>
+</root>

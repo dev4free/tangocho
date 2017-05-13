@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databases defaultId="0" maxId="4">
+<db dialect="org.hibernate.dialect.PostgreSQLDialect" driver="org.postgresql.Driver" id="0" isolationLevel="" name="tangocho" poolSize="1" typeName="POSTGRESQL" url="jdbc:postgresql://localhost/tangocho_db">
+<property name="user" value="tangocho"/>
+<property name="password" value="hogehoge"/>
+<metadata catalog="" schema="tangocho" table-name-exclude="" table-name-include="" table-name-pattern="%" table-types="TABLE"/>
+</db>
+</databases>

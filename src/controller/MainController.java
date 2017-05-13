@@ -6,6 +6,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import model.bl.*;
+import model.entities.Cards;
 
 /**
  * Servlet implementation class MainController
@@ -19,22 +22,38 @@ public class MainController extends HttpServlet {
      */
     public MainController() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		try {
+			HttpSession session = request.getSession(true);
+			MBLIMain currentModel = (MBLIMain)session.getAttribute("model");
+			if (currentModel == null) {
+				currentModel = new MBLMain();
+				session.setAttribute("model", currentModel);
+				currentModel.init();
+			}
+			Cards card = currentModel.getCardById(2);
+	
+			
+			response.getWriter().append("{\"result\":\"counter="+card.getQuestion()+"\"}");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		doGet(request, response);
 	}
 
