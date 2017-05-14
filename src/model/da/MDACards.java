@@ -2,9 +2,10 @@ package model.da;
 
 
 
-import java.sql.Statement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import model.entities.Cards;
@@ -16,23 +17,42 @@ public class MDACards {
 		this.mainDataAccess = mainDataAccess;
 	}
 
-	public void LoadNewCards(List<Cards> cardList) {
+	public List<Cards> LoadCardsByDecdId(int deckId) throws Exception {
+		Connection conn = mainDataAccess.getConnection();
 		
+		List<Cards> result = new ArrayList<Cards>(); 
+		String query = "SELECT id,deck_id,question,answer,last_time,next_time,reviewed FROM tangocho.cards where deck_id = ?";
+		PreparedStatement pstm = conn.prepareStatement(query);
+		pstm.setInt(1, deckId);
+				
+		ResultSet rs = pstm.executeQuery();
+		while (rs.next()) {
+			Cards card = new Cards();
+			card.setId(rs.getInt("id"));
+			card.setDeckId(rs.getInt("deck_id"));
+			card.setQuestion(rs.getString("question"));
+			card.setAnswer(rs.getString("answer"));
+			card.setLastTime(rs.getDate("last_time"));
+			card.setNextTime(rs.getInt("next_time"));
+			card.setReviewed(rs.getBoolean("reviewed"));
+			result.add(card);
+		}
+		rs.close();
+		pstm.close();
+		
+		return result;
 	}
 	
 	public Cards getCardById(int id) throws Exception{
 		Connection conn = mainDataAccess.getConnection();
-		Statement stmt = null;
 
-		stmt = conn.createStatement();
-		String sql;
-		sql = "SELECT id,deck_id,question,answer,last_time,next_time,reviewed FROM tangocho.cards where id = 2";
-		ResultSet rs = stmt.executeQuery(sql);
+		String query = "SELECT id,deck_id,question,answer,last_time,next_time,reviewed FROM tangocho.cards where id = :id";
+		PreparedStatement pstm = conn.prepareStatement(query);
+		pstm.setString(id, "id");
+		ResultSet rs = pstm.executeQuery();
 
 		Cards card = new Cards();
-		// STEP 5: Extract data from result set
-		while (rs.next()) {
-			// Retrieve by column name
+		if (!rs.next()) {			
 			card.setId(rs.getInt("id"));
 			card.setDeckId(rs.getInt("deck_id"));
 			card.setQuestion(rs.getString("question"));
@@ -41,9 +61,8 @@ public class MDACards {
 			card.setNextTime(rs.getInt("next_time"));
 			card.setReviewed(rs.getBoolean("reviewed"));
 		}
-		// STEP 6: Clean-up environment
 		rs.close();
-		stmt.close();
+		pstm.close();
 		//conn.close();
 		return card;
 	}

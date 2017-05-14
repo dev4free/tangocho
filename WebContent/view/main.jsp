@@ -10,31 +10,34 @@
 <body>
 	question:<span id="question"></span><br>
 	answer:<span id="answer"></span><br>
-
+	<button onClick="getNextCard()">next card</button>
 	<script>
-		$(document).ready(function() {
-			console.log("ready!");
+		function getNextCard() {
 			var formData = {
-				name : "aname",
-				age : "31"
-			}; //Array 
+					command : "getNextCard",
+					paramas : {}
+				};  
 
-			$.ajax({
-				url : "/tangocho/maincontroller",
-				type : "post",
-				encoding:"UTF-8",
-				data : formData,
-				dataType: "json",
-				success : function(data, textStatus, jqXHR) {
-					var response = data;
-					$("#question").html(data.question);
-					$("#answer").html(data.answer);
-					console.log("success!"+data.question);
-				},
-				error : function(jqXHR, textStatus, errorThrown) {
-					console.log("error!"+errorThrown);
-				}
-			});
+				$.ajax({
+					url : "/tangocho/maincontroller",
+					type : "post",
+					encoding:"UTF-8",
+					data : formData,
+					dataType: "json",
+					success : function(data, textStatus, jqXHR) {
+						var response = data;
+						$("#question").html(data.question);
+						$("#answer").html(data.answer);
+						console.log("success!"+data.question);
+					},
+					error : function(jqXHR, textStatus, errorThrown) {
+						console.log("error!"+errorThrown);
+					}
+				});
+		}
+		
+		$(document).ready(function() {
+			getNextCard();
 		});
 	</script>
 </body>

@@ -39,16 +39,20 @@ public class MainController extends HttpServlet {
 				currentModel = new MBLMain();
 				session.setAttribute("model", currentModel);
 				currentModel.init();
+				currentModel.loadCardsList(1);
 			}
-			Cards card = currentModel.getCardById(2);
-			ObjectMapper mapper = new ObjectMapper();
+			String command = request.getParameter("command"); 
+			if (command.equals("getNextCard")) {
+				Cards card = currentModel.getNextCard();
+				ObjectMapper mapper = new ObjectMapper();
 
-			//Object to JSON in String
-			String jsonInString = mapper.writeValueAsString(card);
-			
-			response.setContentType("text/html; charset=UTF-8");
-			response.setCharacterEncoding("UTF-8");
-			response.getWriter().append(jsonInString);
+				//Object to JSON in String
+				String jsonInString = mapper.writeValueAsString(card);
+				
+				response.setContentType("text/html; charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().append(jsonInString);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

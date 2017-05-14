@@ -2,6 +2,7 @@ package model.da;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.List;
 import java.util.Properties;
 import model.da.MDAIMain;
 import model.entities.Cards;
@@ -27,6 +28,11 @@ public class MDAMain  implements MDAIMain {
 	public Cards getCardById(int id) throws Exception {
 		return cardsDataAcess.getCardById(id);
 	}
+	
+	public List<Cards> LoadCardsByDecdId(int deckId) throws Exception {
+		return cardsDataAcess.LoadCardsByDecdId(deckId);
+	}
+
 	public Connection getConnection() {
 		return conn;
 	}
