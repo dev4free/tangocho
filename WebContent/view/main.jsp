@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type="text/javascript" src="/tangocho/js/lib/jquery-3.2.1.js"></script>
-<title>単語帳</title>
+<title>単語帳　第１段</title>
 </head>
 <body>
 	question:<span id="question"></span><br>
