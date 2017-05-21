@@ -16,7 +16,7 @@
 	<div id='content'>
 		<div id='jqxWidget'>
 			<div id="window">
-				<div>Titolo</div>
+				<div>英語ー日本語言葉</div>
 				<div id=content>
 					<div>
 						question:<span id="question"></span><br>
