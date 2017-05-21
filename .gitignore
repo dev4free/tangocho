@@ -1,1 +1,3 @@
 *.class
+tangocho.update.*.*.log
+/build/
