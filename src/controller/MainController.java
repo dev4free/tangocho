@@ -9,8 +9,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.bl.*;
 import model.entities.Cards;
-import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
+
+class ParamsAnswer {
+	public Integer cardId;
+	public Boolean failed;
+	public Boolean skip;
+	public Integer nextTime;
+}
 /**
  * Servlet implementation class MainController
  */
@@ -35,16 +41,13 @@ public class MainController extends HttpServlet {
 		try {
 			HttpSession session = request.getSession(true);
 			MBLIMain currentModel = (MBLIMain)session.getAttribute("model");
+			ObjectMapper mapper = new ObjectMapper();
 			if (currentModel == null) {
 				currentModel = new MBLMain();
 				session.setAttribute("model", currentModel);
 				currentModel.init();
-				currentModel.loadCardsList(1);
-			}
-			String command = request.getParameter("command"); 
-			if (command.equals("getNextCard")) {
 				Cards card = currentModel.getNextCard();
-				ObjectMapper mapper = new ObjectMapper();
+				mapper = new ObjectMapper();
 
 				//Object to JSON in String
 				String jsonInString = mapper.writeValueAsString(card);
@@ -52,6 +55,26 @@ public class MainController extends HttpServlet {
 				response.setContentType("text/html; charset=UTF-8");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().append(jsonInString);
+				
+				//currentModel.loadCardsList();
+			} else {
+				String command = request.getParameter("command"); 
+				String params = request.getParameter("params"); 
+				if (command.equals("setAnswer")) {
+					ParamsAnswer paramsAnswer = mapper.readValue(params, ParamsAnswer.class);
+					
+					currentModel.applyAnswer(paramsAnswer.cardId, paramsAnswer.failed, paramsAnswer.skip, paramsAnswer.nextTime);
+					
+					Cards card = currentModel.getNextCard();
+					mapper = new ObjectMapper();
+
+					//Object to JSON in String
+					String jsonInString = mapper.writeValueAsString(card);
+					
+					response.setContentType("text/html; charset=UTF-8");
+					response.setCharacterEncoding("UTF-8");
+					response.getWriter().append(jsonInString);
+				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

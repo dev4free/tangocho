@@ -29,12 +29,21 @@ public class MDAMain  implements MDAIMain {
 		return cardsDataAcess.getCardById(id);
 	}
 	
-	public List<Cards> LoadCardsByDecdId(int deckId) throws Exception {
-		return cardsDataAcess.LoadCardsByDecdId(deckId);
+	public List<Cards> LoadCardsToReview(int deckId) throws Exception {
+		return cardsDataAcess.LoadCardsToReview(deckId);
 	}
 
 	public Connection getConnection() {
 		return conn;
+	}
+	public List<Cards> LoadNewCards(int deckId, Integer limit) throws Exception {
+		return cardsDataAcess.LoadNewCards(deckId, limit);
+	}
+
+	@Override
+	public void UpdateCardAndHistory(Cards card) throws Exception {
+		cardsDataAcess.UpdateCardAndHistory(card);
+		
 	}
 
 }
