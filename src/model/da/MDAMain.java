@@ -2,14 +2,17 @@ package model.da;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 import model.da.MDAIMain;
 import model.entities.Cards;
+import model.entities.History;
 
 public class MDAMain  implements MDAIMain {
 	private Connection conn = null;
 	private MDACards cardsDataAcess = null;
+	private MDAHistory historyDataAcess = null;
 	
 	public void init() throws Exception {
 		if (conn == null) {
@@ -23,14 +26,17 @@ public class MDAMain  implements MDAIMain {
 		if (cardsDataAcess == null) {
 			cardsDataAcess = new MDACards(this);
 		}
+		if (historyDataAcess == null) {
+			historyDataAcess = new MDAHistory(this);
+		}
 	}
 	
 	public Cards getCardById(int id) throws Exception {
 		return cardsDataAcess.getCardById(id);
 	}
 	
-	public List<Cards> LoadCardsToReview(int deckId) throws Exception {
-		return cardsDataAcess.LoadCardsToReview(deckId);
+	public List<Cards> LoadCardsToReview(int deckId, boolean dayLimit) throws Exception {
+		return cardsDataAcess.LoadCardsToReview(deckId, dayLimit);
 	}
 
 	public Connection getConnection() {
@@ -42,8 +48,19 @@ public class MDAMain  implements MDAIMain {
 
 	@Override
 	public void UpdateCardAndHistory(Cards card) throws Exception {
-		cardsDataAcess.UpdateCardAndHistory(card);
-		
+		try {
+			conn.setAutoCommit(false);
+			cardsDataAcess.UpdateCards(card);
+			History history = new History();
+			history.setCardId(card.getId());
+			history.setNextTime(card.getNextTime());
+			history.setReviewedTime(card.getLastTime());
+			historyDataAcess.InsertHistory(history);
+		} catch (SQLException e ) {
+			conn.rollback();
+			throw e;
+		} finally {
+			conn.setAutoCommit(true);
+		}
 	}
-
 }

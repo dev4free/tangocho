@@ -9,7 +9,7 @@
 <script type="text/javascript" src="/tangocho/js/lib/jqwidgets/jqxcore.js"></script>
 <script type="text/javascript" src="/tangocho/js/lib/jqwidgets/jqxbuttons.js"></script>
 <script type="text/javascript" src="/tangocho/js/lib/jqwidgets/jqxwindow.js"></script>
-<script type="text/javascript" src="/tangocho/js/app/frmmain.js"></script>
+<script type="application/javascript" src="/tangocho/js/app/frmmain.js"></script>
 <link rel="stylesheet" href="/tangocho/js/lib/jqwidgets/styles/jqx.metrodark.css" type="text/css" />
 <title>単語帳 第2段</title>
 </head>
@@ -26,7 +26,10 @@
 						answer:<span id="answer"></span><br>
 					</div>
 					<div>
-						<input type="button" value="Button" id='jqxButton' />
+						<input type="button" value="Next card" id='jqxButton' />
+						<input type="button" value="Failed" id='btnFailed' />
+						<input type="button" value="Only new cards" id='btnOnlyNewCards' />
+						<input type="button" value="Only old cards" id='btnOnlyOldCards' />
 					</div>
 				</div>
 			</div>

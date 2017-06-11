@@ -1,8 +1,9 @@
-/**
- * 
- */
+$(document).ready(function() {
+	mainForm = new frmMain();
+	mainForm.run();
+});
 
-const current_theme = 'metrodark';
+var currentTheme = 'metrodark'
 
 function frmMain() {
 	this.currentCard  = null;
@@ -17,11 +18,67 @@ function frmMain() {
 		posSizeData.top = Number((verticalmargin / 2).toFixed(0));
 	}
 
-	this.setAnswer = function() {
+	this.execCommandOnReplay = function(replay) {
+		if (replay.command === "showCard") {
+			this.currentCard = replay.card;
+			$("#question").html(this.currentCard.question);
+			$("#answer").html(this.currentCard.answer);
+		} else if (replay.command === "noMoreCards") {
+			alert("no more cards");
+		} else {
+			alert("invalid command");
+		}
+	}
+	
+	this.loadOnlyNewCards = function() {
+		var formData = {
+				command : "loadOnlyNewCards",
+			};
+			var _this = this;  
+			$.ajax({
+				url : "/tangocho/maincontroller",
+				type : "post",
+				encoding : "UTF-8",
+				data : formData,
+				dataType : "json",
+				success : function(data, textStatus, jqXHR) {
+					_this.execCommandOnReplay(data);
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					console.log("error!" + errorThrown);
+				}
+			});
+	}
+	
+	this.loadOnlyOldCards = function() {
+		var formData = {
+				command : "loadOnlyOldCards",
+			};
+			var _this = this;  
+			$.ajax({
+				url : "/tangocho/maincontroller",
+				type : "post",
+				encoding : "UTF-8",
+				data : formData,
+				dataType : "json",
+				success : function(data, textStatus, jqXHR) {
+					_this.execCommandOnReplay(data);
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					console.log("error!" + errorThrown);
+				}
+			});
+	}
+
+	this.setAnswer = function(nextTime) {
 		var _this = this;
+		var failed=false;
+		if (nextTime === 0) {
+			failed=true;
+		}
 		var formData = {
 			command : "setAnswer",
-			params : '{"cardId":"'+_this.currentCard.id+'", "failed":"false", "skip":"false", "nextTime":"'+Math.pow(2, Math.trunc(Math.random()*3))+'"}'
+			params : '{"cardId":"'+_this.currentCard.id+'", "failed":"'+failed+'", "skip":"false", "nextTime":"'+nextTime+'"}'
 		};
 
 		$.ajax({
@@ -31,18 +88,16 @@ function frmMain() {
 			data : formData,
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
-				_this.currentCard = data;
-				$("#question").html(data.question);
-				$("#answer").html(data.answer);
+				_this.execCommandOnReplay(data);
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
 				console.log("error!" + errorThrown);
 			}
 		});
 	}
-	this.getNextCard = function() {
+	this.startNormalSession = function() {
 		var formData = {
-			command : "getNextCard",
+			command : "startNormalSession",
 		};
 		var _this = this;  
 		$.ajax({
@@ -52,9 +107,7 @@ function frmMain() {
 			data : formData,
 			dataType : "json",
 			success : function(data, textStatus, jqXHR) {
-				_this.currentCard = data;
-				$("#question").html(data.question);
-				$("#answer").html(data.answer);
+				_this.execCommandOnReplay(data);
 			},
 			error : function(jqXHR, textStatus, errorThrown) {
 				console.log("error!" + errorThrown);
@@ -76,7 +129,7 @@ function frmMain() {
 				x : posSizeData.left,
 				y : posSizeData.top
 			},
-			theme : current_theme,
+			theme : currentTheme,
 			showCloseButton : false,
 			maxHeight : window.innerHeight - 10,
 			maxWidth : window.innerWidth - 10,
@@ -86,12 +139,36 @@ function frmMain() {
 			width : posSizeData.width,
 			initContent : function() {
 				$("#jqxButton").jqxButton({
-					theme : current_theme,
+					theme : currentTheme,
+					width : '150',
+					height : '25'
+				});
+				$("#btnFailed").jqxButton({
+					theme : currentTheme,
+					width : '150',
+					height : '25'
+				});
+				$("#btnOnlyNewCards").jqxButton({
+					theme : currentTheme,
+					width : '150',
+					height : '25'
+				});
+				$("#btnOnlyOldCards").jqxButton({
+					theme : currentTheme,
 					width : '150',
 					height : '25'
 				});
 				$("#jqxButton").on('click', function() {
-					_this.setAnswer(_this);
+					_this.setAnswer(Math.pow(2, Math.trunc(Math.random()*3)));
+				});
+				$("#btnFailed").on('click', function() {
+					_this.setAnswer(0);
+				});
+				$("#btnOnlyNewCards").on('click', function() {
+					_this.loadOnlyNewCards(0);
+				});
+				$("#btnOnlyOldCards").on('click', function() {
+					_this.loadOnlyOldCards(0);
 				});
 				$('#window').jqxWindow('focus');
 			}
@@ -101,12 +178,8 @@ function frmMain() {
 	this.run = function() {
 		this.createWindow();
 		$('#window').jqxWindow('open');
-		this.getNextCard();
+		this.startNormalSession();
 	};
 }
 
 
-$(document).ready(function() {
-	mainForm = new frmMain();
-	mainForm.run();
-});

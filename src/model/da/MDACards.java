@@ -50,13 +50,23 @@ public class MDACards {
 		return result;
 	}
 	
-	public List<Cards> LoadCardsToReview(int deckId) throws Exception {
+	public List<Cards> LoadCardsToReview(int deckId, boolean dayLimit) throws Exception {
 		Connection conn = mainDataAccess.getConnection();
 		
 		List<Cards> result = new ArrayList<Cards>(); 
-		String query =  "SELECT id,deck_id,question,answer,last_time,next_time,reviewed " +
-						"FROM tangocho.cards where deck_id = ? order by " +
-						"last_time + next_time * interval '1 second' ";
+//		String query =  "SELECT id,deck_id,question,answer,last_time,next_time,reviewed " +
+//						"FROM tangocho.cards where deck_id = ? order by " +
+//						"last_time + next_time * interval '1 second' ";
+		
+		String limitStr = " and  last_time + next_time * interval '1 second' < current_timestamp ";
+		if (!dayLimit) {
+			limitStr = "";
+		}
+		String query =  "SELECT id,deck_id,question,answer,last_time,next_time, reviewed " +
+				"FROM tangocho.cards " +
+				"where reviewed = true and deck_id = ? " + limitStr +
+				"order by last_time + next_time * interval '1 second' ";
+		
 		PreparedStatement pstm = conn.prepareStatement(query);
 		pstm.setInt(1, deckId);
 				
@@ -102,7 +112,7 @@ public class MDACards {
 		return card;
 	}
 
-	public void UpdateCardAndHistory(Cards card) throws Exception {
+	public void UpdateCards(Cards card) throws Exception {
 		String updateTableSQL = "UPDATE tangocho.cards\n"+
 								"SET deck_id = ?,\n" +
 								"question = ?,\n" +
@@ -119,11 +129,13 @@ public class MDACards {
 		preparedStatement.setInt(1, card.getDeckId());
 		preparedStatement.setString(2, card.getQuestion());
 		preparedStatement.setString(3, card.getAnswer());
-		preparedStatement.setDate(4, new java.sql.Date(card.getLastTime().getTime()));
+		preparedStatement.setTimestamp(4, new java.sql.Timestamp(card.getLastTime().getTime()));
 		preparedStatement.setInt(5, card.getNextTime());
 		preparedStatement.setBoolean(6, card.getReviewed());
 		preparedStatement.setBoolean(7, card.getSkip());
 		preparedStatement.setInt(8, card.getId());
 		preparedStatement.executeUpdate();
+		
+		
 	}
 }

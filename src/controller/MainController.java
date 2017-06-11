@@ -1,6 +1,9 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -36,8 +39,6 @@ public class MainController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		try {
 			HttpSession session = request.getSession(true);
 			MBLIMain currentModel = (MBLIMain)session.getAttribute("model");
@@ -46,39 +47,91 @@ public class MainController extends HttpServlet {
 				currentModel = new MBLMain();
 				session.setAttribute("model", currentModel);
 				currentModel.init();
+			}
+			String command = request.getParameter("command"); 
+			String params = request.getParameter("params"); 
+
+			if (command.equals("startNormalSession")) {
+				currentModel.startNormalSession();				
 				Cards card = currentModel.getNextCard();
 				mapper = new ObjectMapper();
 
-				//Object to JSON in String
-				String jsonInString = mapper.writeValueAsString(card);
+				ParamShowCardReplay replay = new ParamShowCardReplay();
+				replay.card = card;
+				replay.command = ParamShowCardReplay.SHOW_CARD;
+				//Object to arJSON in String
+				String jsonInString = mapper.writeValueAsString(replay);
 				
 				response.setContentType("text/html; charset=UTF-8");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().append(jsonInString);
-				
-				//currentModel.loadCardsList();
-			} else {
-				String command = request.getParameter("command"); 
-				String params = request.getParameter("params"); 
-				if (command.equals("setAnswer")) {
-					ParamsAnswer paramsAnswer = mapper.readValue(params, ParamsAnswer.class);
-					
-					currentModel.applyAnswer(paramsAnswer.cardId, paramsAnswer.failed, paramsAnswer.skip, paramsAnswer.nextTime);
-					
-					Cards card = currentModel.getNextCard();
-					mapper = new ObjectMapper();
+			} else if (command.equals("loadOnlyNewCards")) {
+				currentModel.startOnlyNewCardsSession();				
+				Cards card = currentModel.getNextCard();
+				mapper = new ObjectMapper();
 
-					//Object to JSON in String
-					String jsonInString = mapper.writeValueAsString(card);
-					
-					response.setContentType("text/html; charset=UTF-8");
-					response.setCharacterEncoding("UTF-8");
-					response.getWriter().append(jsonInString);
-				}
+				ParamShowCardReplay replay = new ParamShowCardReplay();
+				replay.card = card;
+				replay.command = ParamShowCardReplay.SHOW_CARD;
+				String jsonInString = mapper.writeValueAsString(replay);
+				
+				response.setContentType("text/html; charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().append(jsonInString);
+			} else if (command.equals("loadOnlyOldCards")) {
+				currentModel.startOnlyOldCardsSession();				
+				Cards card = currentModel.getNextCard();
+				mapper = new ObjectMapper();
+
+				ParamShowCardReplay replay = new ParamShowCardReplay();
+				replay.card = card;
+				replay.command = ParamShowCardReplay.SHOW_CARD;
+				String jsonInString = mapper.writeValueAsString(replay);
+				
+				response.setContentType("text/html; charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().append(jsonInString);
+			} else if (command.equals("setAnswer")) {
+				ParamsAnswer paramsAnswer = mapper.readValue(params, ParamsAnswer.class);
+				
+				currentModel.applyAnswer(paramsAnswer.cardId, paramsAnswer.failed, paramsAnswer.skip, paramsAnswer.nextTime);
+				
+				ParamShowCardReplay replay = currentModel.replayToSetAnswer();
+				mapper = new ObjectMapper();
+
+				//Object to JSON in String
+				String jsonInString = mapper.writeValueAsString(replay);
+				
+				response.setContentType("text/html; charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().append(jsonInString);
+			} else {
+				ParamGenericReplay replay = new ParamGenericReplay(ParamGenericReplay.NO_VALID_COMMAND, ParamGenericReplay.NO_VALID_COMMAND);
+				mapper = new ObjectMapper();
+
+				//Object to JSON in String
+				String jsonInString = mapper.writeValueAsString(replay);
+				
+				response.setContentType("text/html; charset=UTF-8");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().append(jsonInString);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			
+			ParamGenericReplay replay = new ParamGenericReplay(ParamGenericReplay.SHOW_ERROR, sw.toString());
+			ObjectMapper mapper = new ObjectMapper();
+
+			//Object to JSON in String
+			String jsonInString = mapper.writeValueAsString(replay);
+			
+			response.setContentType("text/html; charset=UTF-8");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().append(jsonInString);
 		}
 	}
 
