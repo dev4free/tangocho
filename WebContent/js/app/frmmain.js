@@ -3,7 +3,12 @@ $(document).ready(function() {
 	mainForm.run();
 });
 
-var currentTheme = 'metrodark'
+var currentTheme = 'metrodark';
+var rigthPanelWidth = 300;
+var btnContHeight = 120; 
+var winMinWidth = 1024; 
+var winMinHeight = 500; 
+	
 
 function frmMain() {
 	this.currentCard  = null;
@@ -22,14 +27,21 @@ function frmMain() {
 		if (replay.command === "showCard") {
 			this.currentCard = replay.card;
 			$("#question").html(this.currentCard.question);
-			$("#answer").html(this.currentCard.answer);
+			$("#answer").html("");
 		} else if (replay.command === "noMoreCards") {
 			alert("no more cards");
 		} else {
 			alert("invalid command");
 		}
+		$("#show-button").show();
+		$("#answer-buttons").hide();
 	}
-	
+	this.showAnswer = function() {
+		$("#answer").html(this.currentCard.answer);
+		$("#show-button").hide();
+		$("#answer-buttons").show();
+	}
+
 	this.loadOnlyNewCards = function() {
 		var formData = {
 				command : "loadOnlyNewCards",
@@ -114,7 +126,93 @@ function frmMain() {
 			}
 		});
 	}
+	this.setAnswerButtonPos = function()  {
+	    var panelWidth = $("#answer-buttons").width();
+	    var startLeftPoint = 50;
+	    var topLine1 = 25;
+	    var topLine2 = 60;
+	    var bigBtnSize = 65;
+	    var margin = 5
+	    var btnWidth = Math.trunc((panelWidth - startLeftPoint*2 - bigBtnSize*2 - margin*5)/4);
+	    //var btnWidth = 125;
+	    
+	    var btnNum=1;
+		for (i=1; i<=4; i++) {
+			var id = "#day"+btnNum
+			var leftPos =  startLeftPoint + bigBtnSize + (i*margin) + ((i-1)*btnWidth);
+			$(id).width(btnWidth);
+			$(id).css("left",leftPos+"px");
+			$(id).css("top",topLine1 + "px");
+			btnNum = btnNum * 2;
+		}
+		for (i=1; i<=4; i++) {
+			var id = "#day"+btnNum
+			var leftPos =  startLeftPoint + bigBtnSize + (i*margin) + ((i-1)*btnWidth);
+			$(id).width(btnWidth);
+			$(id).css("left",leftPos+"px");
+			$(id).css("top",topLine2+"px");
+			btnNum = btnNum * 2;
+		}
+		$("#failed").css("left", startLeftPoint+"px"); 
+		$("#failed").css("top", topLine1+"px"); 
+
+		var skipLeftPos =  startLeftPoint + bigBtnSize + margin*5 + ((4)*btnWidth);
+		$("#skip").css("left", skipLeftPos+"px"); 
+		$("#skip").css("top", topLine1+"px");
+		
+		var showAnswerLefPos =  startLeftPoint + bigBtnSize + margin;
+		var showAnswerWidth = panelWidth - bigBtnSize*2 - startLeftPoint*2 - margin*4;
+		$("#show-answer").css("left", showAnswerLefPos+"px"); 
+		$("#show-answer").css("top", topLine1+"px");
+		$("#show-answer").width(showAnswerWidth);
+		
+
+	}
+	this.resizePanels = function() {
+		var frmWidth = $('#window').jqxWindow('width');
+		var frmHeight = $('#window').jqxWindow('height');
+     	if (frmWidth < winMinWidth) {
+     		frmWidth = winMinWidth;
+     	} 
+     	if (frmHeight < winMinHeight) {
+     		frmHeight = winMinHeight;
+     	} 
+		
+		$('#window').jqxWindow({height:frmHeight+"px"});
+		$('#window').jqxWindow({width:frmWidth+"px"});
+		$('#content').height(frmHeight);
+		$('#content').width(frmWidth);
+
+		$("#left").height(frmHeight-31);
+		$("#left").width(frmWidth-rigthPanelWidth);
+		
+	    $("#right").height(frmHeight-31);
+	    $("#right").width(rigthPanelWidth);
+	    $("#right").css('left',(frmWidth-rigthPanelWidth));
+
+	    var qHeight = Math.trunc((frmHeight-31 -120)/2);
+		$("#question").height(qHeight);
+		$("#question").width(frmWidth-200);
+		$("#question").css("line-height", qHeight+"px");
+	    
+		var aHeight = frmHeight - 31 - qHeight - btnContHeight;
+		$("#answer").height(aHeight);
+		$("#answer").width(frmWidth-200);
+	    $("#answer").css('top',qHeight);
+		$("#answer").css("line-height", aHeight+"px");
+	    
+	    $("#answer-buttons").width(frmWidth-rigthPanelWidth);				
+	    $("#answer-buttons").css('top',$("#answer").height() + $("#question").height());
+	    $("#answer-buttons").css('left',0);
+
+	    $("#show-button").width(frmWidth-rigthPanelWidth);				
+	    $("#show-button").css('top',$("#answer").height() + $("#question").height());
+	    $("#show-button").css('left',0);
+	    this.setAnswerButtonPos();
+	};
+
 	this.createWindow = function() {
+		var me = this;
 		var jqxWidget = $('#jqxWidget');
 		var offset = jqxWidget.offset();
 		var posSizeData = {};
@@ -133,37 +231,71 @@ function frmMain() {
 			showCloseButton : false,
 			maxHeight : window.innerHeight - 10,
 			maxWidth : window.innerWidth - 10,
-			minHeight : 200,
-			minWidth : 200,
+			minHeight : 0,
+			minWidth : 0,
 			height : posSizeData.height,
 			width : posSizeData.width,
 			initContent : function() {
-				$("#jqxButton").jqxButton({
-					theme : currentTheme,
-					width : '150',
-					height : '25'
+				var btnNum=1;
+				for (i=1; i<=8; i++) {
+					$("#btnDay"+btnNum).jqxButton({
+						theme : currentTheme,
+						width : '100%',
+						height : '30'
+					});
+					btnNum = btnNum * 2;
+				}
+				$("#btnDay1").on('click', function() {
+					_this.setAnswer(1);					
+				});
+				$("#btnDay2").on('click', function() {
+					_this.setAnswer(2);					
+				});
+				$("#btnDay4").on('click', function() {
+					_this.setAnswer(4);					
+				});
+				$("#btnDay16").on('click', function() {
+					_this.setAnswer(16);					
+				});
+				$("#btnDay32").on('click', function() {
+					_this.setAnswer(32);					
+				});
+				$("#btnDay64").on('click', function() {
+					_this.setAnswer(64);					
+				});
+				$("#btnDay128").on('click', function() {
+					_this.setAnswer(128);					
+				});
+				$("#btnFailed").on('click', function() {
+					_this.setAnswer(0);					
 				});
 				$("#btnFailed").jqxButton({
 					theme : currentTheme,
-					width : '150',
-					height : '25'
+					width : '100%',
+					height : '100%'
+				});
+				$("#btnSkip").jqxButton({
+					theme : currentTheme,
+					width : '100%',
+					height : '100%'
 				});
 				$("#btnOnlyNewCards").jqxButton({
 					theme : currentTheme,
-					width : '150',
+					width : '100%',
 					height : '25'
 				});
 				$("#btnOnlyOldCards").jqxButton({
 					theme : currentTheme,
-					width : '150',
+					width : '24%',
 					height : '25'
 				});
-				$("#jqxButton").on('click', function() {
-					_this.setAnswer(Math.pow(2, Math.trunc(Math.random()*3)));
+				$("#btnShowAnswer").jqxButton({
+					theme : currentTheme,
+					width : '100%',
+					height : '100%'
 				});
-				$("#btnFailed").on('click', function() {
-					$("#jqxDockPanel").jqxDockPanel('render');
-					//_this.setAnswer(0);
+				$("#btnShowAnswer").on('click', function() {
+					_this.showAnswer();
 				});
 				$("#btnOnlyNewCards").on('click', function() {
 					_this.loadOnlyNewCards(0);
@@ -174,80 +306,17 @@ function frmMain() {
 				$('#window').jqxWindow('focus');
 			}
 		});
-		$('#window').on('resizing', function (event) {
-			//console.log("resizing");
-	        //$('#left').attr('dock', 'left');
-	        $('#left').width('70%');
-	        $('#left').height('100%');
-	        //$('#right').attr('dock', 'right');
-	        $('#right').width('30%');
-	        $('#right').height('100%');
-			var winHeight = $('#content').height();
-	        $('#jqxDockPanel').jqxDockPanel({height:winHeight})
-	        $('#jqxDockPanel').jqxDockPanel('render');
+		$('#window').on('resized', function (event) {
+			me.resizePanels();
 		});
+		this.resizePanels();
 		
 	};
 
-	this.testPanes = function() {
-		// Create jqxDockPanel
-		var winHeight = $('#content').height();
-        $("#jqxDockPanel").jqxDockPanel({ width: "100%", height: winHeight, lastchildfill: false});
-        $("#jqxDockPanel div").css('color', '#fff');
-        // Apply custom layout depending on the user's choice.
-        //$("#jqxDockPanel > div > div").css({ width: 'auto', height: 'auto' });
-        $('#left').attr('dock', 'left');
-        $('#left').width('70%');
-        $('#left').height('100%');
-        $('#right').attr('dock', 'right');
-        $('#right').width('30%');
-        $('#right').height('100%');
-        
-        $('#left_top').attr('dock', 'top');
-        $('#left_top').width('100%');
-        $('#left_top').height('500px');
-        
-        $('#left_bottom').attr('dock', 'bottom');
-        $('#left_bottom').width('100%');
-        $('#left_bottom').height('200px');
-        
-        $('#jqxDockPanel').jqxDockPanel('render');
-//            } else
-//                if (position < 115) {
-//                    $("#jqxDockPanel > div > div").css({ width: '100px' });
-//                    $('#first').attr('dock', 'left');
-//                    $('#second').attr('dock', 'right');
-//                    $('#third').attr('dock', 'bottom');
-//                    $('#third').height('140px');
-//                    $('#fourth').attr('dock', 'top');
-//                    $('#fourth').height('70px');
-//                } else if (position < 175) {
-//                    $("#jqxDockPanel > div > div").css({ width: '150px' });
-//                    $('#first').attr('dock', 'left');
-//                    $('#second').attr('dock', 'left');
-//                    $('#third').attr('dock', 'left');
-//                    $('#fourth').attr('dock', 'left');
-//                } else if (position < 235) {
-//                    $("#jqxDockPanel > div > div").css({ height: '70px' });
-//                    $('#first').attr('dock', 'top');
-//                    $('#second').attr('dock', 'top');
-//                    $('#third').attr('dock', 'top');
-//                    $('#fourth').attr('dock', 'top');
-//                }
-//                else {
-//                    $("#jqxDockPanel > div > div").css({ width: '100px' });
-//                    $('#first').attr('dock', 'left');
-//                    $('#second').attr('dock', 'left');
-//                    $('#third').attr('dock', 'left');
-//                    $('#fourth').attr('dock', 'left');
-//                }
-	}
-
 	this.run = function() {
 		this.createWindow();
-		this.testPanes();
 		$('#window').jqxWindow('open');
-//		this.startNormalSession();
+		this.startNormalSession();
 	};
 }
 
