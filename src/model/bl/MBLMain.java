@@ -1,5 +1,6 @@
 package model.bl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,11 +8,13 @@ import controller.ParamShowCardReplay;
 import model.da.MDAIMain;
 import model.da.MDAMain;
 import model.entities.Cards;
+import model.entities.Decks;
 
 public class MBLMain implements MBLIMain{
 	private List<Cards> currentCardList = null;
 	private MDAIMain mainDataAccess = null;
 	private Cards currentCard = null;
+	private Decks currentDeck = null;
 	private int currentCardIndex;
 	private boolean isNewCards = false;
 	private int currentDeckId;
@@ -31,12 +34,29 @@ public class MBLMain implements MBLIMain{
 		return mainDataAccess.getCardById(id);
 	}
 
+	private boolean isNewDay(Date deckAcessDayTime) {
+		Date currenDate = new Date();
+		long diff = currenDate.getTime() - deckAcessDayTime.getTime();
+		long diffMinutes = diff / (60 * 1000) % 60;
+		if (diffMinutes > 1440) {
+			return true;
+		}
+		if (deckAcessDayTime.getDay() != currenDate.getDay()){
+			return true;
+		}
+		return false;
+	}
 	public void startNormalSession() throws Exception {
 		currentCardIndex = -1;
 		studySessionType = StudySessionType.NORMAL;
 		isNewCards = true;
 		currentDeckId = 1;
-		currentCardList = mainDataAccess.LoadNewCards(currentDeckId, new Integer(10));
+		currentDeck = mainDataAccess.getDeckById(currentDeckId);
+		if (isNewDay(currentDeck.getLastAccess())) {
+			currentCardList = mainDataAccess.LoadNewCards(currentDeckId, new Integer(10));
+		} else {
+			currentCardList = new ArrayList<Cards>();
+		}
 	}
 
 	public List<Cards> getCardList() {
@@ -106,7 +126,7 @@ public class MBLMain implements MBLIMain{
 	}
 	public void startOnlyOldCardsSession() throws Exception {
 		currentCardIndex = -1;
-		studySessionType = StudySessionType.NEWONLY;
+		studySessionType = StudySessionType.REVIEWONLY;
 		isNewCards = true;
 		currentDeckId = 1;
 		currentCardList = mainDataAccess.LoadCardsToReview(currentDeckId, false);

@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Properties;
 import model.da.MDAIMain;
 import model.entities.Cards;
+import model.entities.Decks;
 import model.entities.History;
 
 public class MDAMain  implements MDAIMain {
 	private Connection conn = null;
 	private MDACards cardsDataAcess = null;
+	private MDADecks decksDataAcess = null;
 	private MDAHistory historyDataAcess = null;
 	
 	public void init() throws Exception {
@@ -29,12 +31,18 @@ public class MDAMain  implements MDAIMain {
 		if (historyDataAcess == null) {
 			historyDataAcess = new MDAHistory(this);
 		}
+		if (decksDataAcess == null) {
+			decksDataAcess = new MDADecks(this);
+		}
 	}
 	
 	public Cards getCardById(int id) throws Exception {
 		return cardsDataAcess.getCardById(id);
 	}
 	
+	public boolean isNewDay(int deckId) {
+		return true;
+	}
 	public List<Cards> LoadCardsToReview(int deckId, boolean dayLimit) throws Exception {
 		return cardsDataAcess.LoadCardsToReview(deckId, dayLimit);
 	}
@@ -55,6 +63,7 @@ public class MDAMain  implements MDAIMain {
 			history.setCardId(card.getId());
 			history.setNextTime(card.getNextTime());
 			history.setReviewedTime(card.getLastTime());
+			decksDataAcess.updateAccessDate(card.getDeckId());
 			historyDataAcess.InsertHistory(history);
 		} catch (SQLException e ) {
 			conn.rollback();
@@ -62,5 +71,10 @@ public class MDAMain  implements MDAIMain {
 		} finally {
 			conn.setAutoCommit(true);
 		}
+	}
+
+	@Override
+	public Decks getDeckById(int id) throws Exception {
+		return decksDataAcess.getDeckById(id);
 	}
 }

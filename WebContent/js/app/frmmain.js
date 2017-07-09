@@ -11,6 +11,9 @@ var winMinHeight = 500;
 	
 
 function frmMain() {
+	this.CLOSE = 0;
+	this.SHOW_OLDCARDS = 1;
+	this.SHOW_NEWCARDS = 2;
 	this.currentCard  = null;
 	this.getPositionAndSize = function(posSizeData) {
 		var viewportWidth = window.innerWidth;
@@ -23,15 +26,77 @@ function frmMain() {
 		posSizeData.top = Number((verticalmargin / 2).toFixed(0));
 	}
 
+	this.noMoreCardAction = function (selectedAction) {
+		alert("selected action=" + selectedAction)
+	}
+	
+	this.calcPosition = function() {
+		
+	}
+
+	this.closeApp = function() {
+		$("#content").hide();
+	}
+
+	this.doAction = function() {
+		if ($('#rbtNewCards').jqxRadioButton('checked')) {
+			this.loadOnlyNewCards();
+		} else if ($('#rbtOldCards').jqxRadioButton('checked')) {
+			this.loadOnlyOldCards();
+		} else {
+			this.closeApp();
+		}
+	}
+	this.noMoreCards = function(parendId) {
+		var _this = this;
+		var modalWidth = 270;
+		var modalHeight = 220;
+		var parentPosition = $("#"+parendId).position();
+		var parentHieght = $("#"+parendId).height();
+		var parentWidth = $("#"+parendId).width();
+		var modalLeft = parentPosition.left + Math.trunc(parentWidth/2) - modalWidth/2;
+		var modalTop = parentPosition.top + Math.trunc(parentHieght/2) - modalHeight/2;
+		var result = this.SHOW_NEWCARDS;
+		$('#dlgNoMoreCards').jqxWindow({
+			position : {
+				x : modalLeft,
+				y : modalTop
+			},
+			theme : currentTheme,
+			showCloseButton : true,
+			maxHeight : window.innerHeight - 10,
+			maxWidth : window.innerWidth - 10,
+			minHeight : 0,
+			minWidth : 0,
+			height : 220,
+			width : 270,
+			isModal: true,
+			initContent : function() {
+	            $("#rbtNewCards").jqxRadioButton({ theme : currentTheme, width: 140, height: 25});
+	            $("#rbtOldCards").jqxRadioButton({ theme : currentTheme, width: 140, height: 25 });				
+	            $("#rbtCloseSession").jqxRadioButton({ theme : currentTheme, checked:true, width: 120, height: 25 });				
+				$("#btnNoMoreCardsOK").jqxButton({
+					theme : currentTheme
+				});
+				$("#btnNoMoreCardsOK").on('click', function() {
+					$('#dlgNoMoreCards').jqxWindow('close');
+					_this.doAction()
+				});
+				$('#dlgNoMoreCards').jqxWindow('focus');
+			}
+		});
+		$('#dlgNoMoreCards').jqxWindow('open');
+	}
+
 	this.execCommandOnReplay = function(replay) {
 		if (replay.command === "showCard") {
 			this.currentCard = replay.card;
 			$("#question").html(this.currentCard.question);
 			$("#answer").html("");
 		} else if (replay.command === "noMoreCards") {
-			alert("no more cards");
+			this.noMoreCards("window");
 		} else {
-			alert("invalid command");
+			alert("invalid command:" + replay.command);
 		}
 		$("#show-button").show();
 		$("#answer-buttons").hide();
@@ -134,7 +199,6 @@ function frmMain() {
 	    var bigBtnSize = 65;
 	    var margin = 5
 	    var btnWidth = Math.trunc((panelWidth - startLeftPoint*2 - bigBtnSize*2 - margin*5)/4);
-	    //var btnWidth = 125;
 	    
 	    var btnNum=1;
 		for (i=1; i<=4; i++) {
@@ -187,17 +251,17 @@ function frmMain() {
 		$("#left").width(frmWidth-rigthPanelWidth);
 		
 	    $("#right").height(frmHeight-31);
-	    $("#right").width(rigthPanelWidth);
-	    $("#right").css('left',(frmWidth-rigthPanelWidth));
+	    $("#right").width(rigthPanelWidth-1);
+	    $("#right").css('left',(frmWidth-rigthPanelWidth-1));
 
 	    var qHeight = Math.trunc((frmHeight-31 -120)/2);
 		$("#question").height(qHeight);
-		$("#question").width(frmWidth-200);
+		$("#question").width(frmWidth-rigthPanelWidth);
 		$("#question").css("line-height", qHeight+"px");
 	    
 		var aHeight = frmHeight - 31 - qHeight - btnContHeight;
 		$("#answer").height(aHeight);
-		$("#answer").width(frmWidth-200);
+		$("#answer").width(frmWidth-rigthPanelWidth);
 	    $("#answer").css('top',qHeight);
 		$("#answer").css("line-height", aHeight+"px");
 	    
@@ -213,8 +277,6 @@ function frmMain() {
 
 	this.createWindow = function() {
 		var me = this;
-		var jqxWidget = $('#jqxWidget');
-		var offset = jqxWidget.offset();
 		var posSizeData = {};
 		posSizeData.width = 400;
 		posSizeData.height = 200;
@@ -252,6 +314,9 @@ function frmMain() {
 					_this.setAnswer(2);					
 				});
 				$("#btnDay4").on('click', function() {
+					_this.setAnswer(4);					
+				});
+				$("#btnDay8").on('click', function() {
 					_this.setAnswer(4);					
 				});
 				$("#btnDay16").on('click', function() {

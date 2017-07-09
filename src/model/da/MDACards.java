@@ -54,10 +54,6 @@ public class MDACards {
 		Connection conn = mainDataAccess.getConnection();
 		
 		List<Cards> result = new ArrayList<Cards>(); 
-//		String query =  "SELECT id,deck_id,question,answer,last_time,next_time,reviewed " +
-//						"FROM tangocho.cards where deck_id = ? order by " +
-//						"last_time + next_time * interval '1 second' ";
-		
 		String limitStr = " and  last_time + next_time * interval '1 second' < current_timestamp ";
 		if (!dayLimit) {
 			limitStr = "";
@@ -125,17 +121,15 @@ public class MDACards {
 		
 		PreparedStatement preparedStatement = mainDataAccess.getConnection().prepareStatement(updateTableSQL);
 
-		int i=0;
-		preparedStatement.setInt(1, card.getDeckId());
-		preparedStatement.setString(2, card.getQuestion());
-		preparedStatement.setString(3, card.getAnswer());
-		preparedStatement.setTimestamp(4, new java.sql.Timestamp(card.getLastTime().getTime()));
-		preparedStatement.setInt(5, card.getNextTime());
-		preparedStatement.setBoolean(6, card.getReviewed());
-		preparedStatement.setBoolean(7, card.getSkip());
-		preparedStatement.setInt(8, card.getId());
+		int i=1;
+		preparedStatement.setInt(i++, card.getDeckId());
+		preparedStatement.setString(i++, card.getQuestion());
+		preparedStatement.setString(i++, card.getAnswer());
+		preparedStatement.setTimestamp(i++, new java.sql.Timestamp(card.getLastTime().getTime()));
+		preparedStatement.setInt(i++, card.getNextTime());
+		preparedStatement.setBoolean(i++, card.getReviewed());
+		preparedStatement.setBoolean(i++, card.getSkip());
+		preparedStatement.setInt(i++, card.getId());
 		preparedStatement.executeUpdate();
-		
-		
 	}
 }

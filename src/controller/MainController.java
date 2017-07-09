@@ -58,7 +58,11 @@ public class MainController extends HttpServlet {
 
 				ParamShowCardReplay replay = new ParamShowCardReplay();
 				replay.card = card;
-				replay.command = ParamShowCardReplay.SHOW_CARD;
+				if (card == null) {
+					replay.command = ParamShowCardReplay.NO_MORE_CARDS;
+				} else {
+					replay.command = ParamShowCardReplay.SHOW_CARD;
+				}
 				//Object to arJSON in String
 				String jsonInString = mapper.writeValueAsString(replay);
 				

@@ -11,74 +11,78 @@
 <script type="text/javascript" src="/tangocho/js/lib/jqwidgets/jqxcore.js"></script>
 <script type="text/javascript" src="/tangocho/js/lib/jqwidgets/jqxbuttons.js"></script>
 <script type="text/javascript" src="/tangocho/js/lib/jqwidgets/jqxwindow.js"></script>
-<script type="text/javascript" src="/tangocho/js/lib/jqwidgets/jqxdockpanel.js"></script>
+<script type="text/javascript" src="/tangocho/js/lib/jqwidgets/jqxradiobutton.js"></script>
 <script type="application/javascript" src="/tangocho/js/app/frmmain.js"></script>
 <title>単語帳 第2段</title>
 </head>
 <body>
 	<div id='main_content'>
-		<div id='jqxWidget'>
-			<div id="window">
-				<div id="title" style="position: absolute; display: block; height: 20px; width: 100%">英語ー日本語言葉</div>
-
-				<div id="content" style="position: absolute; display: block; overflow: none">
-					<div id='left' style='background: #486974;'>
-						<div id="question">
-							question:<span id="question"></span><br>
+		<div id="window">
+			<div id="title" style="position: absolute; display: block; height: 20px; width: 100%">英語ー日本語言葉</div>
+			<div id="content" style="position: absolute; display: block; overflow: none">
+				<div id='left'>
+					<div id="question">
+						<span id="question"></span><br>
+					</div>
+					<div id="answer">
+						<span id="answer"></span><br>
+					</div>
+					<div id="buttons-container">
+						<div id="answer-buttons">
+							<div id="failed">
+								<input type="button" value="忘れた！" id='btnFailed' />
+							</div>
+							<div id="day1" class="nextDay">
+								<input type="button" value="1 日" id='btnDay1' />
+							</div>
+							<div id="day2" class="nextDay">
+								<input type="button" value="2 日" id='btnDay2' />
+							</div>
+							<div id="day4" class="nextDay">
+								<input type="button" value="4 日" id='btnDay4' />
+							</div>
+							<div id="day8" class="nextDay">
+								<input type="button" value="8 日" id='btnDay8' />
+							</div>
+							<div id="day16" class="nextDay">
+								<input type="button" value="16 日" id='btnDay16' />
+							</div>
+							<div id="day32" class="nextDay">
+								<input type="button" value="32 日" id='btnDay32' />
+							</div>
+							<div id="day64" class="nextDay">
+								<input type="button" value="64 日" id='btnDay64' />
+							</div>
+							<div id="day128" class="nextDay">
+								<input type="button" value="128 日" id='btnDay128' />
+							</div>
+							<div id="skip">
+								<input type="button" value="カードを隠す" id='btnSkip' />
+							</div>
 						</div>
-						<div id="answer">
-							answer:<span id="answer"></span><br>
+						<div id="show-button">
+							<div id="show-answer">
+								<input type="button" value="解答表示" id='btnShowAnswer' style="font-size: 24px;"/>
+							</div>
 						</div>
-						<div id="buttons-container">
-							<div id="answer-buttons">
-								<div id="failed">
-									<input type="button" value="忘れた！" id='btnFailed' />
-								</div>
-								<div id="day1" class="nextDay">
-									<input type="button" value="1 日" id='btnDay1' />
-								</div>
-								<div id="day2" class="nextDay">
-									<input type="button" value="2 日" id='btnDay2' />
-								</div>
-								<div id="day4" class="nextDay">
-									<input type="button" value="4 日" id='btnDay4' />
-								</div>
-								<div id="day8" class="nextDay">
-									<input type="button" value="8 日" id='btnDay8' />
-								</div>
-								<div id="day16" class="nextDay">
-									<input type="button" value="16 日" id='btnDay16' />
-								</div>
-								<div id="day32" class="nextDay">
-									<input type="button" value="32 日" id='btnDay32' />
-								</div>
-								<div id="day64" class="nextDay">
-									<input type="button" value="64 日" id='btnDay64' />
-								</div>
-								<div id="day128" class="nextDay">
-									<input type="button" value="128 日" id='btnDay128' />
-								</div>
-								<div id="skip">
-									<input type="button" value="カードを隠す" id='btnSkip' />
-								</div>
-							</div>
-							<div id="show-button">
-								<div id="show-answer">
-									<input type="button" value="解答表示" id='btnShowAnswer' style="font-size: 24px;"/>
-								</div>
-							</div>
-							<div id="old-answer-buttons">
-								<input type="button" value="Next card" id='btnNext' /> <input type="button" value="Failed" id='btnFailed' /> <input type="button" value="Only new cards" id='btnOnlyNewCards' /> <input type="button" value="Only old cards" id='btnOnlyOldCards' />
-							</div>
+						<div id="old-answer-buttons">
+							<input type="button" value="Next card" id='btnNext' /> <input type="button" value="Failed" id='btnFailed' /> <input type="button" value="Only new cards" id='btnOnlyNewCards' /> <input type="button" value="Only old cards" id='btnOnlyOldCards' />
 						</div>
 					</div>
-					<div id='right' style='background: #1687a7;'></div>
 				</div>
+				<div id='right'></div>
 			</div>
 		</div>
 	</div>
-	<script>
-		
-	</script>
+	<div id="dlgNoMoreCards" style="display:none">
+			<div id="dlgNoMoreCardsTitle" style="position: absolute; display: block; height: 20px; width: 100%">勉強完了</div>
+			<div id="dlgNoMoreCardsCnt" >
+				<div id="lblLessonOver">今日の勉強を終わりました、どうしますか?</div>
+				<div id="rbtNewCards" style="margin-top: 20px">新しいカードを復讐</div>
+				<div id="rbtOldCards" style="margin-top: 5px">古いカードを復讐</div>
+				<div id="rbtCloseSession" style="margin-top: 5px">終了</div>
+				<div id="btnNoMoreCardsOK" style="margin-top: 20px; margin-left: 40px; margin-right: 40px">OK</div>
+			</div>
+	</div>
 </body>
 </html>
