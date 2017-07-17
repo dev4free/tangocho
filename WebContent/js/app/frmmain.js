@@ -75,11 +75,11 @@ function frmMain() {
 			minHeight : 0,
 			minWidth : 0,
 			height : 220,
-			width : 270,
+			width : 300,
 			isModal: true,
 			initContent : function() {
-	            $("#rbtNewCards").jqxRadioButton({ theme : currentTheme, width: 140, height: 25});
-	            $("#rbtOldCards").jqxRadioButton({ theme : currentTheme, width: 140, height: 25 });				
+	            $("#rbtNewCards").jqxRadioButton({ theme : currentTheme, width: 270, height: 25});
+	            $("#rbtOldCards").jqxRadioButton({ theme : currentTheme, width: 240, height: 25 });				
 	            $("#rbtCloseSession").jqxRadioButton({ theme : currentTheme, checked:true, width: 120, height: 25 });				
 				$("#btnNoMoreCardsOK").jqxButton({
 					theme : currentTheme

@@ -30,7 +30,7 @@
 					<div id="buttons-container">
 						<div id="answer-buttons">
 							<div id="failed">
-								<input type="button" value="忘れた！" id='btnFailed' />
+								<input type="button" value="不正解" id='btnFailed' />
 							</div>
 							<div id="day1" class="nextDay">
 								<input type="button" value="1 日" id='btnDay1' />
@@ -57,7 +57,7 @@
 								<input type="button" value="128 日" id='btnDay128' />
 							</div>
 							<div id="skip">
-								<input type="button" value="カードを隠す" id='btnSkip' />
+								<input type="button" value="スキップ" id='btnSkip' />
 							</div>
 						</div>
 						<div id="show-button">
@@ -96,9 +96,9 @@
 			<div id="dlgNoMoreCardsTitle" style="position: absolute; display: block; height: 20px; width: 100%">勉強完了</div>
 			<div id="dlgNoMoreCardsCnt" >
 				<div id="lblLessonOver">今日の勉強を終わりました、どうしますか?</div>
-				<div id="rbtNewCards" style="margin-top: 20px">新しいカードを復讐</div>
-				<div id="rbtOldCards" class="label">古いカードを復讐</div>
-				<div id="rbtCloseSession" class="label">終了</div>
+				<div id="rbtNewCards" style="margin-top: 20px">新しいカードを勉強する</div>
+				<div id="rbtOldCards" style="margin-top: 5px">古いカードを復習</div>
+				<div id="rbtCloseSession" style="margin-top: 5px">終了</div>
 				<div id="btnNoMoreCardsOK" style="margin-top: 20px; margin-left: 40px; margin-right: 40px">OK</div>
 			</div>
 	</div>
