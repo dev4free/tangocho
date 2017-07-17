@@ -9,12 +9,15 @@ import model.da.MDAIMain;
 import model.da.MDAMain;
 import model.entities.Cards;
 import model.entities.Decks;
+import model.pojo.Statistics;
 
 public class MBLMain implements MBLIMain{
 	private List<Cards> currentCardList = null;
 	private MDAIMain mainDataAccess = null;
 	private Cards currentCard = null;
 	private Decks currentDeck = null;
+	private Statistics totalStatistics = new Statistics();
+	private Statistics sessionStatistics = new Statistics();
 	private int currentCardIndex;
 	private boolean isNewCards = false;
 	private int currentDeckId;
@@ -46,12 +49,30 @@ public class MBLMain implements MBLIMain{
 		}
 		return false;
 	}
+	public Statistics getTotalStatistics() {
+		return totalStatistics;
+	}
+
+	public Statistics getSessionStatistics() {
+		return sessionStatistics;
+	}
+	
+	private void initTotalStatistics() throws Exception {
+		mainDataAccess.loadStatistcs(totalStatistics, currentDeckId);
+		totalStatistics.correctAnswersPerc = 0; 
+		totalStatistics.failedAnswersPerc = 0; 
+		totalStatistics.correctAnswersPerc = (float)((float)totalStatistics.correctAnswers * 100 /(float)totalStatistics.totalAnswers); 
+		totalStatistics.failedAnswersPerc = 100 - totalStatistics.correctAnswersPerc; 
+	}
 	public void startNormalSession() throws Exception {
 		currentCardIndex = -1;
 		studySessionType = StudySessionType.NORMAL;
 		isNewCards = true;
 		currentDeckId = 1;
 		currentDeck = mainDataAccess.getDeckById(currentDeckId);
+		totalStatistics.clear();
+		sessionStatistics.clear();
+		initTotalStatistics();
 		if (isNewDay(currentDeck.getLastAccess())) {
 			currentCardList = mainDataAccess.LoadNewCards(currentDeckId, new Integer(10));
 		} else {
@@ -70,7 +91,7 @@ public class MBLMain implements MBLIMain{
 		if (card == null) {
 			command = ParamShowCardReplay.NO_MORE_CARDS;
 		}
-		ParamShowCardReplay replay = new ParamShowCardReplay(currentCard, command);
+		ParamShowCardReplay replay = new ParamShowCardReplay(currentCard, totalStatistics, sessionStatistics, command);
 		return replay; 
 	}
 
@@ -81,7 +102,7 @@ public class MBLMain implements MBLIMain{
 			currentCard = currentCardList.get(currentCardIndex);
 		}
 		if (currentCard == null && isNewCards &&  studySessionType ==  StudySessionType.NORMAL) {
-				currentCardList = mainDataAccess.LoadCardsToReview(currentDeckId, true);
+				currentCardList = mainDataAccess.LoadCardsToReview(currentDeckId, false);
 				if (currentCardList.size() > 0) {
 					currentCardIndex=0;
 					isNewCards = false;
@@ -99,11 +120,28 @@ public class MBLMain implements MBLIMain{
 		if (cardId.intValue() != currentCard.getId().intValue()) {
 			throw new Exception("Current card and saving card Id are not matching ("+currentCard.getId().intValue()+" - "+ cardId +")");
 		}
+		sessionStatistics.totalCards++;
+		sessionStatistics.reviewedCards++;
+		totalStatistics.reviewedCards++;
+		sessionStatistics.totalAnswers++;
+		totalStatistics.totalAnswers++;
+		if (failed) {
+			sessionStatistics.failedAnswers++;
+			totalStatistics.failedAnswers++;
+		} else {
+			sessionStatistics.correctAnswers++;
+			totalStatistics.correctAnswers++;
+		}
+		sessionStatistics.correctAnswersPerc = (float)((float)sessionStatistics.correctAnswers * 100 /(float)sessionStatistics.totalAnswers); 
+		sessionStatistics.failedAnswersPerc = 100 - sessionStatistics.correctAnswersPerc; 
+		totalStatistics.correctAnswersPerc = (float)((float)totalStatistics.correctAnswers * 100 /(float)totalStatistics.totalAnswers); 
+		totalStatistics.failedAnswersPerc = 100 - totalStatistics.correctAnswersPerc; 
+
 		currentCard.setLastTime(new Date());
 		currentCard.setSkip(skip);
 		currentCard.setReviewed(true);
 		currentCard.setNextTime(nextTime*24*60*60);
-		mainDataAccess.UpdateCardAndHistory(currentCard);
+		mainDataAccess.updateCardAndHistory(currentCard);
 		if (failed) {
 			int newIndex = currentCardIndex+4;
 			if (newIndex > currentCardList.size()) {
@@ -118,6 +156,7 @@ public class MBLMain implements MBLIMain{
 
 	@Override
 	public void startOnlyNewCardsSession() throws Exception {
+		sessionStatistics.clear();
 		currentCardIndex = -1;
 		studySessionType = StudySessionType.NEWONLY;
 		isNewCards = true;
@@ -125,10 +164,11 @@ public class MBLMain implements MBLIMain{
 		currentCardList = mainDataAccess.LoadNewCards(currentDeckId, null);
 	}
 	public void startOnlyOldCardsSession() throws Exception {
+		sessionStatistics.clear();
 		currentCardIndex = -1;
 		studySessionType = StudySessionType.REVIEWONLY;
 		isNewCards = true;
 		currentDeckId = 1;
-		currentCardList = mainDataAccess.LoadCardsToReview(currentDeckId, false);
+		currentCardList = mainDataAccess.LoadCardsToReview(currentDeckId, true);
 	}
 }

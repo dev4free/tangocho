@@ -9,6 +9,7 @@ import model.da.MDAIMain;
 import model.entities.Cards;
 import model.entities.Decks;
 import model.entities.History;
+import model.pojo.Statistics;
 
 public class MDAMain  implements MDAIMain {
 	private Connection conn = null;
@@ -55,7 +56,7 @@ public class MDAMain  implements MDAIMain {
 	}
 
 	@Override
-	public void UpdateCardAndHistory(Cards card) throws Exception {
+	public void updateCardAndHistory(Cards card) throws Exception {
 		try {
 			conn.setAutoCommit(false);
 			cardsDataAcess.UpdateCards(card);
@@ -76,5 +77,14 @@ public class MDAMain  implements MDAIMain {
 	@Override
 	public Decks getDeckById(int id) throws Exception {
 		return decksDataAcess.getDeckById(id);
+	}
+
+	@Override
+	public void loadStatistcs(Statistics statistics, int deckId) throws Exception {
+		statistics.totalAnswers = historyDataAcess.getTotalAnswers(deckId);
+		statistics.correctAnswers = historyDataAcess.getCorrectAnswers(deckId);
+		statistics.failedAnswers = statistics.totalAnswers - statistics.correctAnswers;  
+		statistics.totalCards = cardsDataAcess.getTotalCards(deckId);
+		statistics.reviewedCards = cardsDataAcess.getTotalReviwedCards(deckId);
 	}
 }

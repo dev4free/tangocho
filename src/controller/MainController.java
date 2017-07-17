@@ -63,6 +63,8 @@ public class MainController extends HttpServlet {
 				} else {
 					replay.command = ParamShowCardReplay.SHOW_CARD;
 				}
+				replay.sessionStatistics = currentModel.getSessionStatistics();
+				replay.totalStatistics = currentModel.getTotalStatistics();
 				//Object to arJSON in String
 				String jsonInString = mapper.writeValueAsString(replay);
 				
@@ -77,6 +79,9 @@ public class MainController extends HttpServlet {
 				ParamShowCardReplay replay = new ParamShowCardReplay();
 				replay.card = card;
 				replay.command = ParamShowCardReplay.SHOW_CARD;
+				replay.sessionStatistics = currentModel.getSessionStatistics();
+				replay.totalStatistics = currentModel.getTotalStatistics();
+				
 				String jsonInString = mapper.writeValueAsString(replay);
 				
 				response.setContentType("text/html; charset=UTF-8");
@@ -90,6 +95,9 @@ public class MainController extends HttpServlet {
 				ParamShowCardReplay replay = new ParamShowCardReplay();
 				replay.card = card;
 				replay.command = ParamShowCardReplay.SHOW_CARD;
+				replay.sessionStatistics = currentModel.getSessionStatistics();
+				replay.totalStatistics = currentModel.getTotalStatistics();
+
 				String jsonInString = mapper.writeValueAsString(replay);
 				
 				response.setContentType("text/html; charset=UTF-8");

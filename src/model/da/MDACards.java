@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,13 +50,48 @@ public class MDACards {
 		
 		return result;
 	}
+	public int getTotalCards(int deckId) throws Exception {
+		int result = 0;
+		Connection conn = mainDataAccess.getConnection();
+		
+		String query = "select count(*) as num from tangocho.cards where deck_id = ? ";
+		PreparedStatement pstm = conn.prepareStatement(query);
+		pstm.setInt(1, deckId);
+				
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) {
+			result = rs.getInt("num");
+		}
+		rs.close();
+		pstm.close();
+		
+		return result;
+	}
+
+	public int getTotalReviwedCards(int deckId) throws Exception {
+		int result = 0;
+		Connection conn = mainDataAccess.getConnection();
+		
+		String query = "select count(*) as num from tangocho.cards where deck_id = ? and reviewed = true;";
+		PreparedStatement pstm = conn.prepareStatement(query);
+		pstm.setInt(1, deckId);
+				
+		ResultSet rs = pstm.executeQuery();
+		if (rs.next()) {
+			result = rs.getInt("num");
+		}
+		rs.close();
+		pstm.close();
+		
+		return result;
+	}
 	
-	public List<Cards> LoadCardsToReview(int deckId, boolean dayLimit) throws Exception {
+	public List<Cards> LoadCardsToReview(int deckId, boolean loadAll) throws Exception {
 		Connection conn = mainDataAccess.getConnection();
 		
 		List<Cards> result = new ArrayList<Cards>(); 
 		String limitStr = " and  last_time + next_time * interval '1 second' < current_timestamp ";
-		if (!dayLimit) {
+		if (loadAll) {
 			limitStr = "";
 		}
 		String query =  "SELECT id,deck_id,question,answer,last_time,next_time, reviewed " +

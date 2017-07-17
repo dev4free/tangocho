@@ -30,8 +30,12 @@ function frmMain() {
 		alert("selected action=" + selectedAction)
 	}
 	
-	this.calcPosition = function() {
-		
+	this.resetSessionStatLabels = function() {
+		$("#lblSxTotalCards").html("Tolal cards: 0");
+		$("#lblSxReviwedCards").html("Reviewed cards: 0");
+		$("#lblSxTotalAnswer").html("Total answers: 0");
+		$("#lblSxCorretAnswer").html("Correct answers: 0 (0%)");
+		$("#lblSxFailedAnswer").html("Failed answers: 0 (0%)");
 	}
 
 	this.closeApp = function() {
@@ -40,8 +44,10 @@ function frmMain() {
 
 	this.doAction = function() {
 		if ($('#rbtNewCards').jqxRadioButton('checked')) {
+			this.resetSessionStatLabels();
 			this.loadOnlyNewCards();
 		} else if ($('#rbtOldCards').jqxRadioButton('checked')) {
+			this.resetSessionStatLabels();
 			this.loadOnlyOldCards();
 		} else {
 			this.closeApp();
@@ -63,7 +69,7 @@ function frmMain() {
 				y : modalTop
 			},
 			theme : currentTheme,
-			showCloseButton : true,
+			showCloseButton : false,
 			maxHeight : window.innerHeight - 10,
 			maxWidth : window.innerWidth - 10,
 			minHeight : 0,
@@ -88,12 +94,47 @@ function frmMain() {
 		$('#dlgNoMoreCards').jqxWindow('open');
 	}
 
+	this.setStatisticsValues = function(statData, isSession) {
+		var prefix="";
+		if (isSession) {
+			prefix = "Sx"
+		}
+		var correctPerc = statData.correctAnswersPerc;
+		if (statData.correctAnswersPerc*100 != parseInt(statData.correctAnswersPerc*100)) {
+			correctPerc = (Math.round(statData.correctAnswersPerc*100)/100).toFixed(2);
+		}
+		var failedPerc = statData.failedAnswersPerc;
+		if (statData.failedAnswersPerc*100 != parseInt(statData.failedAnswersPerc*100)) {
+			failedPerc = (Math.round(statData.failedAnswersPerc*100)/100).toFixed(2);
+		}
+
+		var correctAnsersStrValue = "" + statData.correctAnswers + " ("+correctPerc +"%)";
+		var failedAnsersStrValue = "" + statData.failedAnswers + " ("+failedPerc +"%)";
+		$("#lbl"+prefix+"TotalCards").html("Tolal cards: "+ statData.totalCards);
+		$("#lbl"+prefix+"ReviwedCards").html("Reviewed cards: "+ statData.reviewedCards);
+		$("#lbl"+prefix+"TotalAnswer").html("Total answers: "+ statData.totalAnswers);
+		$("#lbl"+prefix+"CorretAnswer").html("Correct answers: "+ correctAnsersStrValue);
+		$("#lbl"+prefix+"FailedAnswer").html("Failed answers: "+ failedAnsersStrValue);
+	} 
+	this.loadStatistics = function(replay) {
+		if (typeof(replay.totalStatistics) !== "undefined" &&  replay.totalStatistics !== null) {
+			this.setStatisticsValues(replay.totalStatistics, false);
+		}
+		if (typeof(replay.sessionStatistics) !== "undefined" &&  replay.sessionStatistics !== null) {
+			this.setStatisticsValues(replay.sessionStatistics, true);
+		}
+	}
+	this.loadShowCardsData = function(replay) {
+		this.currentCard = replay.card;
+		$("#question").html(this.currentCard.question);
+		$("#answer").html("");
+		this.loadStatistics(replay);
+	}
 	this.execCommandOnReplay = function(replay) {
 		if (replay.command === "showCard") {
-			this.currentCard = replay.card;
-			$("#question").html(this.currentCard.question);
-			$("#answer").html("");
+			this.loadShowCardsData(replay);
 		} else if (replay.command === "noMoreCards") {
+			this.loadStatistics(replay);
 			this.noMoreCards("window");
 		} else {
 			alert("invalid command:" + replay.command);
@@ -344,16 +385,6 @@ function frmMain() {
 					width : '100%',
 					height : '100%'
 				});
-				$("#btnOnlyNewCards").jqxButton({
-					theme : currentTheme,
-					width : '100%',
-					height : '25'
-				});
-				$("#btnOnlyOldCards").jqxButton({
-					theme : currentTheme,
-					width : '24%',
-					height : '25'
-				});
 				$("#btnShowAnswer").jqxButton({
 					theme : currentTheme,
 					width : '100%',
@@ -362,18 +393,13 @@ function frmMain() {
 				$("#btnShowAnswer").on('click', function() {
 					_this.showAnswer();
 				});
-				$("#btnOnlyNewCards").on('click', function() {
-					_this.loadOnlyNewCards(0);
-				});
-				$("#btnOnlyOldCards").on('click', function() {
-					_this.loadOnlyOldCards(0);
-				});
 				$('#window').jqxWindow('focus');
 			}
 		});
 		$('#window').on('resized', function (event) {
 			me.resizePanels();
 		});
+		this.resetSessionStatLabels();
 		this.resizePanels();
 		
 	};

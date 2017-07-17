@@ -65,12 +65,30 @@
 								<input type="button" value="解答表示" id='btnShowAnswer' style="font-size: 24px;"/>
 							</div>
 						</div>
-						<div id="old-answer-buttons">
-							<input type="button" value="Next card" id='btnNext' /> <input type="button" value="Failed" id='btnFailed' /> <input type="button" value="Only new cards" id='btnOnlyNewCards' /> <input type="button" value="Only old cards" id='btnOnlyOldCards' />
+					</div>
+				</div>
+				<div id='right'>
+					<div id="statistics_box">
+						<div id="stat_title">統計</div>
+						<div id="stat_content">
+							<div id="lblTotalCards" class="lblStat">Total cards:</div>
+							<div id="lblReviwedCards" class="lblStat">Reviewed cards:</div>
+							<div id="lblTotalAnswer" class="lblStat">Total answers:</div>
+							<div id="lblCorretAnswer" class="lblStat">Correct answers:</div>
+							<div id="lblFailedAnswer" class="lblStat">Failed answers:</div>
+						</div>
+					</div>
+					<div id="session_statistics_box">
+						<div id="session_stat_title">セッション統計</div>
+						<div id="session_stat_content">
+							<div id="lblSxTotalCards" class="lblStat">Total cards:</div>
+							<div id="lblSxReviwedCards" class="lblStat">Reviewed cards:</div>
+							<div id="lblSxTotalAnswer" class="lblStat">Total answers:</div>
+							<div id="lblSxCorretAnswer" class="lblStat">Correct answers:</div>
+							<div id="lblSxFailedAnswer" class="lblStat">Failed answers:</div>
 						</div>
 					</div>
 				</div>
-				<div id='right'></div>
 			</div>
 		</div>
 	</div>
@@ -79,8 +97,8 @@
 			<div id="dlgNoMoreCardsCnt" >
 				<div id="lblLessonOver">今日の勉強を終わりました、どうしますか?</div>
 				<div id="rbtNewCards" style="margin-top: 20px">新しいカードを復讐</div>
-				<div id="rbtOldCards" style="margin-top: 5px">古いカードを復讐</div>
-				<div id="rbtCloseSession" style="margin-top: 5px">終了</div>
+				<div id="rbtOldCards" class="label">古いカードを復讐</div>
+				<div id="rbtCloseSession" class="label">終了</div>
 				<div id="btnNoMoreCardsOK" style="margin-top: 20px; margin-left: 40px; margin-right: 40px">OK</div>
 			</div>
 	</div>
