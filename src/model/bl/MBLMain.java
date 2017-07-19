@@ -38,6 +38,9 @@ public class MBLMain implements MBLIMain{
 	}
 
 	private boolean isNewDay(Date deckAcessDayTime) {
+		if (deckAcessDayTime == null) {
+			return true;
+		}
 		Date currenDate = new Date();
 		long diff = currenDate.getTime() - deckAcessDayTime.getTime();
 		long diffMinutes = diff / (60 * 1000) % 60;
