@@ -1,12 +1,10 @@
 package controller;
 
-import model.entities.Cards;
-
 public class ParamGenericReplay {
 	public String command;
 	public String errorMessage;
-	public final static String NO_VALID_COMMAND = "showCard";
-	public final static String SHOW_ERROR = "noMoreCards";
+	public final static String NO_VALID_COMMAND = "noValidCommand";
+	public final static String SHOW_ERROR = "showError";
 	
 	public ParamGenericReplay(){
 		super();

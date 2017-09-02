@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -117,6 +118,9 @@ public class MainController extends HttpServlet {
 				response.setContentType("text/html; charset=UTF-8");
 				response.setCharacterEncoding("UTF-8");
 				response.getWriter().append(jsonInString);
+			} else if (command.equals("loadForm")) {
+				RequestDispatcher view = request.getRequestDispatcher("/view/"+params+".jsp");
+				view.forward(request, response);
 			} else {
 				ParamGenericReplay replay = new ParamGenericReplay(ParamGenericReplay.NO_VALID_COMMAND, ParamGenericReplay.NO_VALID_COMMAND);
 				mapper = new ObjectMapper();

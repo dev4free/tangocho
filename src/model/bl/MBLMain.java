@@ -119,13 +119,16 @@ public class MBLMain implements MBLIMain{
 		if (currentCard == null) {
 			return;
 		}
-			
+	
+		//cardId = new Integer(22);
 		if (cardId.intValue() != currentCard.getId().intValue()) {
 			throw new Exception("Current card and saving card Id are not matching ("+currentCard.getId().intValue()+" - "+ cardId +")");
 		}
 		sessionStatistics.totalCards++;
 		sessionStatistics.reviewedCards++;
-		totalStatistics.reviewedCards++;
+		if (currentCard.getReviewed() == false) {
+			totalStatistics.reviewedCards++;
+		}
 		sessionStatistics.totalAnswers++;
 		totalStatistics.totalAnswers++;
 		if (failed) {

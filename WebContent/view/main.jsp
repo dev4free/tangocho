@@ -71,21 +71,21 @@
 					<div id="statistics_box">
 						<div id="stat_title">統計</div>
 						<div id="stat_content">
-							<div id="lblTotalCards" class="lblStat">Total cards:</div>
-							<div id="lblReviwedCards" class="lblStat">Reviewed cards:</div>
-							<div id="lblTotalAnswer" class="lblStat">Total answers:</div>
-							<div id="lblCorretAnswer" class="lblStat">Correct answers:</div>
-							<div id="lblFailedAnswer" class="lblStat">Failed answers:</div>
+							<div id="lblTotalCards" class="lblStat">総カード数:</div>
+							<div id="lblReviwedCards" class="lblStat">勉強出来たカード:</div>
+							<div id="lblTotalAnswer" class="lblStat">答え合計:</div>
+							<div id="lblCorretAnswer" class="lblStat">正解答え:</div>
+							<div id="lblFailedAnswer" class="lblStat">未正解答え:</div>
 						</div>
 					</div>
 					<div id="session_statistics_box">
 						<div id="session_stat_title">セッション統計</div>
 						<div id="session_stat_content">
-							<div id="lblSxTotalCards" class="lblStat">Total cards:</div>
-							<div id="lblSxReviwedCards" class="lblStat">Reviewed cards:</div>
-							<div id="lblSxTotalAnswer" class="lblStat">Total answers:</div>
-							<div id="lblSxCorretAnswer" class="lblStat">Correct answers:</div>
-							<div id="lblSxFailedAnswer" class="lblStat">Failed answers:</div>
+							<div id="lblSxTotalCards" class="lblStat">総カード数:</div>
+							<div id="lblSxReviwedCards" class="lblStat">勉強出来たカード:</div>
+							<div id="lblSxTotalAnswer" class="lblStat">答え合計:</div>
+							<div id="lblSxCorretAnswer" class="lblStat">正解答え:</div>
+							<div id="lblSxFailedAnswer" class="lblStat">未正解答え:</div>
 						</div>
 					</div>
 				</div>
@@ -102,5 +102,8 @@
 				<div id="btnNoMoreCardsOK" style="margin-top: 20px; margin-left: 40px; margin-right: 40px">OK</div>
 			</div>
 	</div>
+<!-- 	<div id="dlgErrorMessage" style="display:none"> -->
+<!-- 		<div id="messageToShow">no message</div> -->
+<!-- 	</div> -->
 </body>
 </html>
