@@ -121,8 +121,10 @@ public class MainController extends HttpServlet {
 			} else if (command.equals("loadForm")) {
 				RequestDispatcher view = request.getRequestDispatcher("/view/"+params+".jsp");
 				view.forward(request, response);
+			} else if (command.equals("skipCard")) {
+				throw new Exception("まだ実装されていない関数");
 			} else {
-				ParamGenericReplay replay = new ParamGenericReplay(ParamGenericReplay.NO_VALID_COMMAND, ParamGenericReplay.NO_VALID_COMMAND);
+				ParamGenericReplay replay = new ParamGenericReplay(ParamGenericReplay.NO_VALID_COMMAND, ParamGenericReplay.NO_VALID_COMMAND, ParamGenericReplay.NO_VALID_COMMAND);
 				mapper = new ObjectMapper();
 
 				//Object to JSON in String
@@ -139,7 +141,7 @@ public class MainController extends HttpServlet {
 			PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			
-			ParamGenericReplay replay = new ParamGenericReplay(ParamGenericReplay.SHOW_ERROR, sw.toString());
+			ParamGenericReplay replay = new ParamGenericReplay(ParamGenericReplay.SHOW_ERROR, e.getMessage(), sw.toString());
 			ObjectMapper mapper = new ObjectMapper();
 
 			//Object to JSON in String
